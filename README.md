@@ -1,3 +1,5 @@
+![Alt Text](./assets/visual_search.png)
+
 # Visual Search System POC (SOP Benchmark)
 
 A demonstration-grade visual search system (Pinterest-style) that retrieves and ranks images visually similar to a query image (optionally a crop/ROI in later milestones). This POC includes:
