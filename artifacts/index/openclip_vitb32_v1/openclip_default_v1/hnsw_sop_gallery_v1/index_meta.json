@@ -1,0 +1,12 @@
+{
+  "model_version": "openclip_vitb32_v1",
+  "preprocess_version": "openclip_default_v1",
+  "index_version": "hnsw_sop_gallery_v1",
+  "space": "cosine",
+  "count": 1673,
+  "dim": 512,
+  "ef_construction": 200,
+  "M": 32,
+  "ef_search": 64,
+  "created_at": 1768313580
+}
