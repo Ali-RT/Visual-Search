@@ -109,3 +109,8 @@ ENV/
 saved_models/
 locals/
 Stanford_Online_Products/
+
+# VSCode
+.vscode/
+
+.DS_Store
