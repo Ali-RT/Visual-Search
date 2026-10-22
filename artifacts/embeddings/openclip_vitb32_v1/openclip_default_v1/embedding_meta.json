@@ -1,9 +1,0 @@
-{
-  "model_version": "openclip_vitb32_v1",
-  "preprocess_version": "openclip_default_v1",
-  "count": 1673,
-  "dim": 512,
-  "created_at": 1768313579,
-  "dtype": "float32",
-  "format": "memmap_f32"
-}

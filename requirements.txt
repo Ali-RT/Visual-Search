@@ -10,8 +10,14 @@ pyyaml==6.0.2
 pydantic==2.10.4
 
 hnswlib==0.8.0
+qdrant-client
 
 torch==2.5.1
 torchvision==0.20.1
 open-clip-torch
 python-multipart
+opencv-python-headless>=4.13.0.92
+
+# auto-labeler Qwen2.5-VL + SAM3 video script (qwen_sam3_pipeline_*, run_sam3_video_batch.py)
+qwen-vl-utils
+psutil>=5.9.0

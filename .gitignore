@@ -108,9 +108,32 @@ ENV/
 # Local files
 saved_models/
 locals/
+
+# Data & images (too large for git)
 Stanford_Online_Products/
+data/use_cases/
+data/new_images/
+sampled_images/
+
+# Artifacts (generated)
+artifacts/
+
+# Frontend build
+frontend/dist/
+frontend/node_modules/
 
 # VSCode
 .vscode/
 
 .DS_Store
+# Generated model weights, datasets, and training outputs
+*.pt
+*.pth
+*.onnx
+*.pte
+auto-labeler/outputs/
+auto-labeler/datasets/
+auto-labeler/data/
+auto-labeler/inputs/
+auto-labeler/*_executorch_model/
+runs/

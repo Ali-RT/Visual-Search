@@ -89,12 +89,15 @@ class IndexService:
         for idx in order:
             row_id = int(candidate_labels[idx])
             item = self.id_map[row_id]
-            results.append(
-                {
-                    "image_id": item["image_id"],
-                    "uri": item["uri"],
-                    "score": float(scores[idx]),
-                    "row_id": row_id,
-                }
-            )
+            result = {
+                "image_id": item["image_id"],
+                "uri": item["uri"],
+                "score": float(scores[idx]),
+                "row_id": row_id,
+            }
+            if "use_case" in item:
+                result["use_case"] = item["use_case"]
+            if "label" in item:
+                result["label"] = item["label"]
+            results.append(result)
         return results

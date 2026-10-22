@@ -44,12 +44,44 @@ class IndexConfig:
 
 
 @dataclass(frozen=True)
+class TaggingConfig:
+    enabled: bool
+    tag_groups: Optional[Dict[str, List[str]]]
+    tag_labels: Optional[Dict[str, List[str]]]
+    backbone: Optional[str] = None
+    pretrained: Optional[str] = None
+
+
+@dataclass(frozen=True)
+class SegmentationConfig:
+    model_id: str
+
+
+@dataclass(frozen=True)
+class Sam2Config:
+    enabled: bool
+    model_id: str
+
+
+@dataclass(frozen=True)
+class QdrantConfig:
+    host: str
+    port: int
+    collection_name: str
+
+
+@dataclass(frozen=True)
 class AppConfig:
     data: DataConfig
     artifacts: ArtifactsConfig
     model: ModelConfig
     preprocess: PreprocessConfig
     index: IndexConfig
+    vector_store: str = "hnswlib"  # "hnswlib" | "qdrant"
+    qdrant: Optional[QdrantConfig] = None
+    tagging: Optional[TaggingConfig] = None
+    segmentation: Optional[SegmentationConfig] = None
+    sam2: Optional[Sam2Config] = None
 
 
 def load_config(path: str) -> AppConfig:
@@ -61,6 +93,41 @@ def load_config(path: str) -> AppConfig:
     model = raw["model"]
     preprocess = raw["preprocess"]
     index = raw["index"]
+
+    tagging_cfg = None
+    tagging = raw.get("tagging")
+    if tagging and tagging.get("enabled", False):
+        tagging_cfg = TaggingConfig(
+            enabled=True,
+            tag_groups=tagging.get("tag_groups"),
+            tag_labels=tagging.get("tag_labels"),
+            backbone=tagging.get("backbone"),
+            pretrained=tagging.get("pretrained"),
+        )
+
+    qdrant_cfg = None
+    qdrant_raw = raw.get("qdrant")
+    if qdrant_raw:
+        qdrant_cfg = QdrantConfig(
+            host=str(qdrant_raw.get("host", "localhost")),
+            port=int(qdrant_raw.get("port", 6333)),
+            collection_name=str(qdrant_raw.get("collection_name", "images")),
+        )
+
+    segmentation_cfg = None
+    segmentation_raw = raw.get("segmentation")
+    if segmentation_raw:
+        segmentation_cfg = SegmentationConfig(
+            model_id=str(segmentation_raw.get("model_id", "nvidia/segformer-b2-finetuned-cityscapes-1024-1024")),
+        )
+
+    sam2_cfg = None
+    sam2_raw = raw.get("sam2")
+    if sam2_raw:
+        sam2_cfg = Sam2Config(
+            enabled=bool(sam2_raw.get("enabled", False)),
+            model_id=str(sam2_raw.get("model_id", "facebook/sam2-hiera-small")),
+        )
 
     return AppConfig(
         data=DataConfig(
@@ -89,4 +156,9 @@ def load_config(path: str) -> AppConfig:
             top_k=int(index["top_k"]),
             top_k_candidates=int(index["top_k_candidates"]),
         ),
+        vector_store=str(raw.get("vector_store", "hnswlib")),
+        qdrant=qdrant_cfg,
+        tagging=tagging_cfg,
+        segmentation=segmentation_cfg,
+        sam2=sam2_cfg,
     )

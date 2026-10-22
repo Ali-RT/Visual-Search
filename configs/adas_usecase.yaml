@@ -1,0 +1,79 @@
+data:
+  image_dir: "data/use_cases"
+  sqlite_path: "artifacts/metadata/adas_usecase.sqlite"
+  allowed_ext: [".jpg", ".jpeg", ".png", ".webp"]
+
+artifacts:
+  root_dir: "artifacts"
+
+model:
+  model_version: "openclip_vitb32_v1"
+  backbone: "ViT-B-32"
+  pretrained: "laion2b_s34b_b79k"
+  device: "auto"
+
+preprocess:
+  preprocess_version: "openclip_default_v1"
+
+index:
+  index_version: "hnsw_adas_usecase_v1"
+  space: "cosine"
+  ef_construction: 200
+  M: 32
+  ef_search: 64
+  top_k: 50
+  top_k_candidates: 200
+
+vector_store: "qdrant"
+
+qdrant:
+  host: "localhost"
+  port: 6333
+  collection_name: "adas_images"
+
+dedup:
+  enabled: true
+  similarity_threshold: 0.995
+
+tracking:
+  enabled: true
+
+tagging:
+  enabled: true
+  backbone: "ViT-SO400M-14-SigLIP2-378"
+  pretrained: "webli"
+  tag_groups:
+    time_of_day:
+      - "a dashcam photo of a road during daytime, the sky is bright and blue, shadows are visible"
+      - "a dashcam photo of a road at nighttime, headlights illuminate the dark road, street lights are on"
+      - "a dashcam photo of a road at dawn or dusk, the sky has orange and purple colors, low sun angle"
+    scene_type:
+      - "a dashcam photo driving through an urban city with tall buildings, intersections, and dense traffic"
+      - "a dashcam photo driving on a rural country road surrounded by open fields, trees, and nature"
+      - "a dashcam photo driving on a multi-lane highway or motorway with highway signs and fast traffic"
+      - "a dashcam photo driving through a quiet suburban residential area with houses and parked cars"
+    crosswalk:
+      - "a dashcam photo where white painted crosswalk lines or a zebra crossing is visible on the road surface"
+      - "a dashcam photo of a road with no crosswalk markings or pedestrian crossing visible"
+    pedestrian:
+      - "a dashcam photo where one or more pedestrians, cyclists, or people are visible near the road"
+      - "a dashcam photo of a road with no people, pedestrians, or cyclists visible"
+    vehicle_density:
+      - "a dashcam photo of an empty or nearly empty road with very few or no other vehicles"
+      - "a dashcam photo of a road with several vehicles, moderate amount of traffic"
+      - "a dashcam photo of a road packed with vehicles, heavy bumper-to-bumper traffic congestion"
+  tag_labels:
+    time_of_day: ["day", "night", "dawn_dusk"]
+    scene_type: ["urban", "rural", "highway", "suburban"]
+    crosswalk: ["present", "absent"]
+    pedestrian: ["present", "absent"]
+    vehicle_density: ["low", "moderate", "heavy"]
+
+segmentation:
+  # Stronger than the previous B2 model; applies to both /segment and /segment/video
+  model_id: "nvidia/segformer-b5-finetuned-cityscapes-1024-1024"
+
+sam2:
+  enabled: true
+  # Prompt-free mask generation for video mode when mode=sam2
+  model_id: "facebook/sam2-hiera-small"
